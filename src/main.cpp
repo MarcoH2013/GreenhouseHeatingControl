@@ -45,8 +45,6 @@ PubSubClient client(espClient);
 DHT dht1(DHTPIN1, DHTTYPE1);
 DHT dht2(DHTPIN2, DHTTYPE2);
 
-byte hol;
-
 void configModeCallback (WiFiManager *myWiFiManager) {
     DBG_OUTPUT_PORT.println("Entered config mode");
     DBG_OUTPUT_PORT.println(WiFi.softAPIP());
@@ -71,7 +69,7 @@ void readSensor1() {
 
     // Check if any reads failed and exit early (to try again).
     if (isnan(h) || isnan(t)) {
-        //DBG_OUTPUT_PORT.println("Failed to read from DHT sensor!");
+        DBG_OUTPUT_PORT.println("Failed to read from DHT sensor 1!");
         return;
     }
 
@@ -103,7 +101,7 @@ void readSensor2() {
 
     // Check if any reads failed and exit early (to try again).
     if (isnan(h) || isnan(t)) {
-        //DBG_OUTPUT_PORT.println("Failed to read from DHT sensor!");
+        DBG_OUTPUT_PORT.println("Failed to read from DHT sensor 2!");
         return;
     }
 
@@ -124,6 +122,11 @@ void readSensor2() {
     DBG_OUTPUT_PORT.print("Heat index: ");
     DBG_OUTPUT_PORT.print(hic);
     DBG_OUTPUT_PORT.println(" *C");
+}
+
+void readSensor() {
+  readSensor1();
+  readSensor2();
 }
 
 void callback(char const* topic, byte* payload, unsigned int length) {
@@ -218,8 +221,7 @@ void setup() {
     dht1.begin();
     dht2.begin();
 
-    timer.setInterval(5000, readSensor1);
-    timer.setInterval(5000, readSensor2);
+    timer.setInterval(5000, readSensor);
 }
 
 void loop() {
